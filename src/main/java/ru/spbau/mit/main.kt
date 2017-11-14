@@ -5,7 +5,7 @@ import java.util.*
 
 
 class BinarySegmentTree(private val size: Int) {
-    private val elements: Array<Int> = Array(4 * size) { 0 }
+    private val elements: IntArray = IntArray(4 * size) { 0 }
 
     fun set(index: Int, value: Boolean) = set(1, 0, size, index, value)
 
@@ -13,17 +13,17 @@ class BinarySegmentTree(private val size: Int) {
 
     fun getKth(k: Int): Int = getKth(1, 0, size, k)
 
-    private fun getKth(node: Int, left: Int, right: Int, k: Int): Int {
+    private tailrec fun getKth(node: Int, left: Int, right: Int, k: Int): Int {
         if (left == right) {
             return left
         }
 
         val middle = getMiddle(left, right)
 
-        return if (k <= elements[leftNode(node)]) {
-            getKth(leftNode(node), left, middle, k)
+        return if (k <= elements[getLeftNodeIndex(node)]) {
+            getKth(getLeftNodeIndex(node), left, middle, k)
         } else {
-            getKth(rightNode(node), middle + 1, right, k - elements[leftNode(node)])
+            getKth(getRightNodeIndex(node), middle + 1, right, k - elements[getLeftNodeIndex(node)])
         }
     }
 
@@ -34,12 +34,12 @@ class BinarySegmentTree(private val size: Int) {
             val middle = getMiddle(left, right)
 
             if (index <= middle) {
-                set(leftNode(node), left, middle, index, value)
+                set(getLeftNodeIndex(node), left, middle, index, value)
             } else {
-                set(rightNode(node), middle + 1, right, index, value)
+                set(getRightNodeIndex(node), middle + 1, right, index, value)
             }
 
-            elements[node] = elements[leftNode(node)] + elements[rightNode(node)]
+            elements[node] = elements[getLeftNodeIndex(node)] + elements[getRightNodeIndex(node)]
         }
     }
 
@@ -51,30 +51,26 @@ class BinarySegmentTree(private val size: Int) {
         val middle = getMiddle(left, right)
 
         return if (index <= middle) {
-            get(leftNode(node), left, middle, index)
+            get(getLeftNodeIndex(node), left, middle, index)
         } else {
-            get(rightNode(node), middle + 1, right, index)
+            get(getRightNodeIndex(node), middle + 1, right, index)
         }
     }
 
-    private fun leftNode(node: Int) = 2 * node
+    private fun getLeftNodeIndex(node: Int) = 2 * node
 
-    private fun rightNode(node: Int) = 2 * node + 1
+    private fun getRightNodeIndex(node: Int) = 2 * node + 1
 
     private fun getMiddle(left: Int, right: Int): Int = left + (right - left) / 2
 }
 
-interface Problem<out T> {
-    fun solve(): T
-}
-
 class StringManipulation(private val name: String,
-                         private val queries: List<Query>) : Problem<String> {
+                         private val queries: List<Query>) {
     private val trees: Array<BinarySegmentTree> = Array(LETTERS_COUNT) {
         BinarySegmentTree(name.length)
     }
 
-    override fun solve(): String {
+    fun solve(): String {
         name.forEachIndexed { index, character -> getTreeByCharacter(character).set(index, true) }
 
         queries.forEach {
@@ -100,9 +96,10 @@ class StringManipulation(private val name: String,
         }
     }
 
+
     data class Query(val index: Int, val character: Char) {
         companion object {
-            fun read(scanner: Scanner) = Query(scanner.nextInt(), scanner.nextLine()[1])
+            inline fun read(scanner: Scanner) = Query(scanner.nextInt(), scanner.nextLine()[1])
         }
     }
 }

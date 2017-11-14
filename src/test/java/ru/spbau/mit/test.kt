@@ -37,12 +37,27 @@ class TestSource {
 
     @Test
     fun testStringManipulationExample1() {
-        assertTrue(testExample("2\nbac\n3\n2 a\n1 b\n2 c", "acb"), "Wrong answer on the first example")
+        assertTrue(testExample("""
+            |2
+            |bac
+            |3
+            |2 a
+            |1 b
+            |2 c
+            """.trimMargin(), "acb"), "Wrong answer on the first example")
     }
 
     @Test
     fun testStringManipulationExample2() {
-        assertTrue(testExample("1\nabacaba\n4\n1 a\n1 a\n1 c\n2 b", "baa"), "Wrong answer on the second example")
+        assertTrue(testExample("""
+            |1
+            |abacaba
+            |4
+            |1 a
+            |1 a
+            |1 c
+            |2 b
+            """.trimMargin(), "baa"), "Wrong answer on the second example")
     }
 
     private fun testExample(input: String, answer: String): Boolean {
