@@ -75,8 +75,9 @@ abstract class ContentTag(
     val children = arrayListOf<Element>()
 
     fun customTag(name: String,
+                  arguments: List<String>,
                   vararg options: Pair<String, String>,
-                  init: CustomTag.() -> Unit) = initTag(CustomTag(name, *options), init)
+                  init: CustomTag.() -> Unit) = initTag(CustomTag(name, arguments, *options), init)
 
     operator fun String.unaryPlus() {
         children.add(TextElement(this))
@@ -122,8 +123,9 @@ abstract class TeXContentTag(
 
 class CustomTag(
         name: String,
+        arguments: List<String> = listOf(),
         vararg options: Pair<String, String>
-) : TeXContentTag(name, options = options.toMap())
+) : TeXContentTag(name, arguments = arguments, options = options.toMap())
 
 class Document : TeXContentTag("document")
 

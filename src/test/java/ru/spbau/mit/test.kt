@@ -90,7 +90,7 @@ class TestSource {
         val result = TeX {
             document {
                 frame("Frame with code", "arg1" to "value1", "arg2" to "value2") {
-                    customTag("code", "language" to "kotlin") {
+                    customTag("code", listOf("second argument"),"language" to "kotlin") {
                         +"val x: Int = 1"
                         +"val y: Int = 2"
                         +"val z = x + y"
@@ -103,7 +103,7 @@ class TestSource {
             |\begin{document}
             |\begin{frame}[arg1 = value1, arg2 = value2]
             |\frametitle{Frame with code}
-            |\begin{code}[language = kotlin]
+            |\begin{code}{second argument}[language = kotlin]
             |val x: Int = 1
             |val y: Int = 2
             |val z = x + y
@@ -191,7 +191,7 @@ class TestSource {
                 }
 
                 frame("Frame with code", "arg1" to "value1", "arg2" to "value2") {
-                    customTag("code", "language" to "c++") {
+                    customTag("code", listOf(), "language" to "c++") {
                         +"... write your code here ..."
                     }
                 }
