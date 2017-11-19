@@ -36,18 +36,9 @@ abstract class SimpleTag(
 abstract class AdvancedTag(
         name: String,
         arguments: List<String>,
-        val preOptions: Map<String, String> = hashMapOf(),
-        val postOptions: Map<String, String> = hashMapOf()
+        private val options: Map<String, String> = hashMapOf()
 ) : SimpleTag(name, arguments) {
-    override fun render(builder: StringBuilder) {
-        builder.append("\\$name${renderPreOptions()}${renderArguments()}${renderPostOptions()}\n")
-    }
-
-    protected fun renderPreOptions() = renderOptions(preOptions)
-
-    protected fun renderPostOptions() = renderOptions(postOptions)
-
-    private fun renderOptions(options: Map<String, String>): String {
+    protected fun renderOptions(): String {
         return if (options.isNotEmpty()) {
             options.entries.joinToString(prefix = "[", postfix = "]", transform = { "${it.key} = ${it.value}" })
         } else {
@@ -56,12 +47,31 @@ abstract class AdvancedTag(
     }
 }
 
+abstract class LeftAdvancedTag(
+        name: String,
+        arguments: List<String>,
+        options: Map<String, String> = hashMapOf()
+) : AdvancedTag(name, arguments, options) {
+    override fun render(builder: StringBuilder) {
+        builder.append("\\$name${renderOptions()}${renderArguments()}\n")
+    }
+}
+
+abstract class RightAdvancedTag(
+        name: String,
+        arguments: List<String>,
+        options: Map<String, String> = hashMapOf()
+) : AdvancedTag(name, arguments, options) {
+    override fun render(builder: StringBuilder) {
+        builder.append("\\$name${renderArguments()}${renderOptions()}\n")
+    }
+}
+
 abstract class ContentTag(
         name: String,
         arguments: List<String> = listOf(),
-        preOptions: Map<String, String> = hashMapOf(),
-        postOptions: Map<String, String> = hashMapOf()
-) : AdvancedTag(name, arguments, preOptions, postOptions) {
+        options: Map<String, String> = hashMapOf()
+) : AdvancedTag(name, arguments, options) {
     val children = arrayListOf<Element>()
 
     fun customTag(name: String,
@@ -73,7 +83,7 @@ abstract class ContentTag(
     }
 
     override fun render(builder: StringBuilder) {
-        builder.append("\\begin{$name}${renderPreOptions()}${renderArguments()}${renderPostOptions()}\n")
+        builder.append("\\begin{$name}${renderArguments()}${renderOptions()}\n")
         children.forEach { it.render(builder) }
         builder.append("\\end{$name}\n")
     }
@@ -88,9 +98,8 @@ abstract class ContentTag(
 abstract class TeXContentTag(
         name: String,
         arguments: List<String> = listOf(),
-        preOptions: Map<String, String> = hashMapOf(),
-        postOptions: Map<String, String> = hashMapOf()
-) : ContentTag(name, arguments, preOptions, postOptions) {
+        options: Map<String, String> = hashMapOf()
+) : ContentTag(name, arguments, options) {
     fun itemize(vararg options: Pair<String, String>,
                 init: Itemize.() -> Unit) = initTag(Itemize(options.toList()), init)
 
@@ -114,19 +123,19 @@ abstract class TeXContentTag(
 class CustomTag(
         name: String,
         vararg options: Pair<String, String>
-) : TeXContentTag(name, postOptions = options.toMap())
+) : TeXContentTag(name, options = options.toMap())
 
 class Document : TeXContentTag("document")
 
 class DocumentClass(
         clazz: String,
         options: List<Pair<String, String>>
-) : AdvancedTag("documentclass", arguments = listOf(clazz), preOptions = options.toMap())
+) : LeftAdvancedTag("documentclass", arguments = listOf(clazz), options = options.toMap())
 
 class UsePackage(
         packages: List<String>,
         options: List<Pair<String, String>> = listOf()
-) : AdvancedTag("usepackage", arguments = listOf(packages.joinToString()), preOptions = options.toMap())
+) : LeftAdvancedTag("usepackage", arguments = listOf(packages.joinToString()), options = options.toMap())
 
 class Title(title: String) : SimpleTag("title", arguments = listOf(title))
 
@@ -138,20 +147,20 @@ class FrameTitle(title: String) : SimpleTag("frametitle", arguments = listOf(tit
 
 class Item : TeXContentTag("item") {
     override fun render(builder: StringBuilder) {
-        builder.append("\\$name${renderPreOptions()}${renderArguments()}${renderPostOptions()}\n")
+        builder.append("\\$name${renderArguments()}${renderOptions()}\n")
         children.forEach { it.render(builder) }
     }
 }
 
-class Itemize(options: List<Pair<String, String>>) : ContentTag("itemize", postOptions = options.toMap()) {
+class Itemize(options: List<Pair<String, String>>) : ContentTag("itemize", options = options.toMap()) {
     fun item(init: Item.() -> Unit) = initTag(Item(), init)
 }
 
-class Enumerate(options: List<Pair<String, String>>) : ContentTag("enumerate", postOptions = options.toMap()) {
+class Enumerate(options: List<Pair<String, String>>) : ContentTag("enumerate", options = options.toMap()) {
     fun item(init: Item.() -> Unit) = initTag(Item(), init)
 }
 
-class Math(options: List<Pair<String, String>>) : ContentTag("displaymath", postOptions = options.toMap())
+class Math(options: List<Pair<String, String>>) : ContentTag("displaymath", options = options.toMap())
 
 class LeftAlignment : TeXContentTag("left")
 
@@ -162,7 +171,7 @@ class CenterAlignment : TeXContentTag("center")
 class Frame(
         frameTitle: String,
         options: List<Pair<String, String>>
-) : TeXContentTag("frame", postOptions = options.toMap()) {
+) : TeXContentTag("frame", options = options.toMap()) {
     init {
         initTag(FrameTitle(frameTitle))
     }
