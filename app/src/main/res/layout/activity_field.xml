@@ -1,0 +1,102 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    android:screenOrientation="landscape"
+    android:theme="@android:style/Theme.Black.NoTitleBar"
+    tools:context="ru.spbau.mit.droidlike.FieldActivity">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+    <ru.spbau.mit.droidlike.game.painter.AndroidPainter
+        android:id="@+id/androidPainter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        android:id="@+id/up"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="130dp"
+        android:layout_marginEnd="65dp"
+        android:background="@null"
+        android:contentDescription="Up"
+        android:scaleType="centerCrop"
+        android:src="@drawable/arrow_up" />
+
+    <ImageButton
+        android:id="@+id/down"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="65dp"
+        android:background="@null"
+        android:contentDescription="Down"
+        android:scaleType="centerCrop"
+        android:src="@drawable/arrow_down" />
+
+    <ImageButton
+        android:id="@+id/left"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="70dp"
+        android:layout_marginEnd="120dp"
+        android:background="@null"
+        android:contentDescription="Left"
+        android:scaleType="centerCrop"
+        android:src="@drawable/arrow_left" />
+
+    <ImageButton
+        android:id="@+id/right"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="70dp"
+        android:layout_marginEnd="10dp"
+        android:background="@null"
+        android:contentDescription="Right"
+        android:scaleType="centerCrop"
+        android:src="@drawable/arrow_right" />
+
+    <ImageButton
+        android:id="@+id/heart"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="150dp"
+        android:layout_marginStart="10dp"
+        android:background="@null"
+        android:contentDescription="Heart"
+        android:scaleType="centerCrop"
+        android:src="@drawable/artifact_heart" />
+
+    <ImageButton
+        android:id="@+id/shield"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="80dp"
+        android:layout_marginStart="10dp"
+        android:background="@null"
+        android:contentDescription="Shield"
+        android:scaleType="centerCrop"
+        android:src="@drawable/artifact_shield" />
+
+    <ImageButton
+        android:id="@+id/sword"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:background="@null"
+        android:contentDescription="Sword"
+        android:scaleType="centerCrop"
+        android:src="@drawable/artifact_sword" />
+
+</FrameLayout>
