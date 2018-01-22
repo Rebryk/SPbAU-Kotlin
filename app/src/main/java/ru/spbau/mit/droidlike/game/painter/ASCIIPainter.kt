@@ -64,9 +64,7 @@ class ASCIIPainter : Painter {
      * Tries to put character in the given position
      */
     private fun draw(character: Char, params: DrawingParameters?) {
-        if (params == null) {
-            throw NullPointerException("DrawingParameters is null")
-        }
+        params ?: throw NullPointerException("DrawingParameters is null")
 
         if (canvas.getOrNull(params.x) == null || canvas[params.x].getOrNull(params.y) == null) {
             throw IndexOutOfBoundsException("Impossible to draw character with $params")

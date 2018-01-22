@@ -48,25 +48,14 @@ class World private constructor(val field: WorldField,
          * Returns a free random position
          * @return a free random position
          */
-        fun getFreeRandomPosition(): Pair<Int, Int> {
-            var pos: Pair<Int, Int>
+        tailrec fun getFreeRandomPosition(): Pair<Int, Int> {
+            val pos = Pair(random.nextInt(field.height), random.nextInt(field.width))
 
-            do {
-                pos = Pair(random.nextInt(field.height), random.nextInt(field.width))
-            } while (field.isWall(pos.first, pos.second) || creatures.containsKey(pos) || artifacts.containsKey(pos))
+            if (!field.isWall(pos.first, pos.second) && !creatures.containsKey(pos) && !artifacts.containsKey(pos)) {
+                return pos
+            }
 
-            return pos
-        }
-
-        /**
-         * Creates a creature in the given position
-         * @param x coordinate of the position
-         * @param y coordinate of the position
-         * @param init method to create creature
-         * @return builder
-         */
-        fun creatureAt(x: Int, y: Int, init: Builder.() -> Creature): Builder = apply {
-            creatures.put(Pair(x, y), init())
+            return getFreeRandomPosition()
         }
 
         /**
@@ -77,17 +66,6 @@ class World private constructor(val field: WorldField,
          */
         fun creatureAt(position: Pair<Int, Int>, init: Builder.() -> Creature): Builder = apply {
             creatures.put(position, init())
-        }
-
-        /**
-         * Creates an artifact in the given position
-         * @param x coordinate of the position
-         * @param y coordinate of the position
-         * @param init method to create artifact
-         * @return builder
-         */
-        fun artifactAt(x: Int, y: Int, init: Builder.() -> Artifact): Builder = apply {
-            artifacts.getOrPut(Pair(x, y), { mutableListOf() }).add(init())
         }
 
         /**
@@ -106,7 +84,7 @@ class World private constructor(val field: WorldField,
          * @param count count of creatures
          */
         fun creatureAtRandomPosition(type: CreatureFactory.CreatureType, count: Int = 1) {
-            for (i in 1..count) {
+            repeat(count) {
                 creatureAt(getFreeRandomPosition()) {
                     CreatureFactory.create(type)
                 }
@@ -119,7 +97,7 @@ class World private constructor(val field: WorldField,
          * @param count count of artifacts
          */
         fun artifactAtRandomPosition(type: ArtifactFactory.ArtifactType, count: Int = 1) {
-            for (i in 1..count) {
+            repeat(count) {
                 artifactAt(getFreeRandomPosition()) {
                     ArtifactFactory.create(type)
                 }

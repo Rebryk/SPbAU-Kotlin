@@ -20,7 +20,11 @@ object Model {
      */
     fun run(world: World): Boolean {
         val creatures = moveCreatures(world)
-        creatures.removeIf { it.second.heal(); it.second.isDead() }
+        creatures.removeIf {
+            it.second.heal()
+            it.second.isDead()
+        }
+
         world.creatures.apply { clear(); putAll(creatures) }
 
         giveArtifacts(world)
@@ -101,6 +105,6 @@ object Model {
      * @return true if player is dead or there is no enemies, false otherwise
      */
     private fun isTheEndOfTheGame(world: World): Boolean {
-        return world.creatures.size == 1 || world.creatures.filter { it.value is Player }.isEmpty()
+        return world.creatures.size == 1 || world.creatures.none { it.value is Player }
     }
 }

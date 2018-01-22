@@ -15,7 +15,7 @@ import ru.spbau.mit.droidlike.game.creatures.Scavenger
 import ru.spbau.mit.droidlike.game.world.ArrayField
 import ru.spbau.mit.droidlike.game.world.World
 
-class AndroidPainter : Painter, View {
+class AndroidPainter(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Painter, View(context, attrs, defStyleAttr) {
     private val paint: Paint = Paint()
     private var field: Bitmap? = null
     private lateinit var canvas: Canvas
@@ -31,12 +31,6 @@ class AndroidPainter : Painter, View {
     }
 
     var onLayoutCallback: () -> Unit = {}
-
-    constructor(context: Context) : this(context, null)
-
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun initialize(height: Int, width: Int) {
         fieldHeight = height

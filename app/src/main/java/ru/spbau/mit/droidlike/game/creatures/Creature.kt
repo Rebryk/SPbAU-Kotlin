@@ -45,9 +45,13 @@ abstract class Creature : CreatureParameters(), Drawable {
         }
     }
 
-    inline fun <reified T> getArtifactCount(): Int = artifacts.filter { it is T && !it.used }.count()
+    inline fun <reified T> getUnusedArtifacts(artifacts: List<Artifact>): List<Artifact> {
+        return artifacts.filter { it is T && !it.used }
+    }
 
-    inline fun <reified T> getActivatedArtifactCount(): Int = activatedArtifacts.filter { it is T && !it.used }.count()
+    inline fun <reified T> getArtifactCount(): Int = getUnusedArtifacts<T>(artifacts).count()
+
+    inline fun <reified T> getActivatedArtifactCount(): Int = getUnusedArtifacts<T>(activatedArtifacts).count()
 
     inline fun <reified T> getArtifact(): Artifact? = artifacts.firstOrNull { it is T && !it.used }
 

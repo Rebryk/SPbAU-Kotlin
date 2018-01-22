@@ -1,6 +1,6 @@
 package ru.spbau.mit.droidlike
 
-
+import kotlinx.android.synthetic.main.activity_field.*
 import android.content.pm.ActivityInfo
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -25,14 +25,14 @@ class FieldActivity : AppCompatActivity() {
 
     private lateinit var game: Roguelike
 
-    private lateinit var up: ImageButton
-    private lateinit var down: ImageButton
-    private lateinit var left: ImageButton
-    private lateinit var right: ImageButton
-
-    private lateinit var heart: ImageButton
-    private lateinit var shield: ImageButton
-    private lateinit var sword: ImageButton
+//    private lateinit var up: ImageButton
+//    private lateinit var down: ImageButton
+//    private lateinit var left: ImageButton
+//    private lateinit var right: ImageButton
+//
+//    private lateinit var heart: ImageButton
+//    private lateinit var shield: ImageButton
+//    private lateinit var sword: ImageButton
 
     private lateinit var player: MediaPlayer
 
@@ -42,41 +42,34 @@ class FieldActivity : AppCompatActivity() {
         setContentView(R.layout.activity_field)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-        up = findViewById<ImageButton>(R.id.up)
         up.alpha = DEFAULT_ALPHA
         up.setOnClickListener {
             clickOnArrow(Action.GO_UP)
         }
 
-        down = findViewById<ImageButton>(R.id.down)
         down.alpha = DEFAULT_ALPHA
         down.setOnClickListener {
             clickOnArrow(Action.GO_DOWN)
         }
 
-        left = findViewById<ImageButton>(R.id.left)
         left.alpha = DEFAULT_ALPHA
         left.setOnClickListener {
             clickOnArrow(Action.GO_LEFT)
         }
 
-        right = findViewById<ImageButton>(R.id.right)
         right.alpha = DEFAULT_ALPHA
         right.setOnClickListener {
             clickOnArrow(Action.GO_RIGHT)
         }
 
-        heart = findViewById<ImageButton>(R.id.heart)
         heart.setOnClickListener {
             clickOnArtifact<MedicineChest>()
         }
 
-        shield = findViewById<ImageButton>(R.id.shield)
         shield.setOnClickListener {
             clickOnArtifact<Shield>()
         }
 
-        sword = findViewById<ImageButton>(R.id.sword)
         sword.setOnClickListener {
             clickOnArtifact<Sword>()
         }
@@ -100,11 +93,7 @@ class FieldActivity : AppCompatActivity() {
     }
 
     private fun notifyUser() {
-        if (game.win()) {
-            Toast.makeText(this, "You win!", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(this, "You lose!", Toast.LENGTH_LONG).show()
-        }
+        Toast.makeText(this, if (game.win()) "You win!" else "You lose!", Toast.LENGTH_LONG).show()
     }
 
     private fun clickOnArrow(action: Action) {
@@ -148,7 +137,7 @@ class FieldActivity : AppCompatActivity() {
 
         // read field
         val field = application.assets.open(fieldName).bufferedReader().use {
-            it.readLines().map { it.map { it == '#' }.toMutableList() }
+            it.readLines().map { row -> row.map { cell -> cell == '#' }.toMutableList() }
         }
 
         game = Roguelike(field, painter)
